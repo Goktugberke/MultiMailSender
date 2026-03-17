@@ -1,0 +1,23 @@
+# ─── Maven ───
+backend/MultiMailSender/target/
+
+# ─── H2 runtime database ───
+backend/data/
+
+# ─── Node.js ───
+frontend/multi-mail-sender/node_modules/
+frontend/multi-mail-sender/.angular/
+frontend/multi-mail-sender/dist/
+
+# ─── IDE ───
+backend/.idea/
+.idea/
+*.iml
+
+# ─── OS ───
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Logs ───
+*.log

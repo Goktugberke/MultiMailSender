@@ -1,0 +1,158 @@
+.page-wrap { max-width: 980px; margin: 32px auto; padding: 0 20px 60px; }
+
+.page-title { font-size:2rem; font-weight:800; letter-spacing:-.5px; margin:0 0 6px; }
+.page-sub   { color:var(--text-muted); font-size:.9rem; }
+.page-header { margin-bottom:28px; }
+
+/* ─── Upload zone ─── */
+.upload-zone {
+  border: 2px dashed var(--primary);
+  border-radius: 16px;
+  padding: 36px 24px;
+  text-align: center;
+  background: linear-gradient(135deg,rgba(79,70,229,.04),rgba(6,182,212,.04));
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+}
+.upload-zone:hover { border-color:#7c3aed; background:linear-gradient(135deg,rgba(79,70,229,.08),rgba(6,182,212,.08)); }
+.upload-zone.dragging { border-color:#10b981; background:rgba(16,185,129,.06); }
+.upload-icon { font-size: 3rem; color: var(--primary); margin-bottom: 12px; opacity:.7; }
+.upload-title { font-weight:700; font-size:1.1rem; color:var(--text); }
+.upload-sub { color:var(--text-muted); font-size:.85rem; margin-top:4px; }
+.upload-btn-label {
+  display:inline-flex; align-items:center; gap:8px;
+  background: linear-gradient(135deg,var(--primary),#7c3aed);
+  color:#fff; border-radius:12px; padding:10px 24px;
+  font-weight:600; cursor:pointer; margin-top:16px;
+  transition:all .2s;
+}
+.upload-btn-label:hover { filter:brightness(1.08); transform:translateY(-1px); box-shadow:0 4px 14px rgba(79,70,229,.4); }
+
+/* ─── AI alert ─── */
+.ai-banner {
+  display:flex; align-items:center; gap:12px; padding:12px 18px;
+  border-radius:14px; margin-bottom:20px; font-size:.85rem;
+}
+.ai-banner.ok { background:linear-gradient(135deg,#d1fae5,#a7f3d0); border:1px solid #6ee7b7; color:#065f46; }
+.ai-banner.warn { background:linear-gradient(135deg,#fef3c7,#fde68a); border:1px solid #fcd34d; color:#92400e; }
+.ai-icon { font-size:1.4rem; }
+
+/* ─── Profile card ─── */
+.profile-hero {
+  background: linear-gradient(135deg,#4f46e5,#0891b2);
+  border-radius: 20px 20px 0 0;
+  padding: 28px 28px 48px;
+  color: #fff;
+  position: relative;
+}
+.profile-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 3px solid rgba(255,255,255,0.5);
+  display:flex; align-items:center; justify-content:center;
+  font-size: 2rem; font-weight:800; color:#fff;
+  margin-bottom: 12px;
+}
+.profile-name  { font-size:1.5rem; font-weight:800; line-height:1.1; }
+.profile-email { font-size:.88rem; opacity:.8; margin-top:4px; }
+.profile-file-info {
+  position:absolute; top:16px; right:20px;
+  background:rgba(255,255,255,.15); border-radius:10px;
+  padding:6px 14px; font-size:.75rem; display:flex; align-items:center; gap:6px;
+}
+
+.profile-body {
+  background: var(--surface);
+  border-radius: 0 0 20px 20px;
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-top: none;
+  margin-top: -1px;
+  box-shadow: var(--shadow);
+}
+
+/* ─── Info grid ─── */
+.info-row { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.info-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:10px; padding:7px 13px; font-size:.82rem; color:var(--text);
+}
+.info-chip i { color:var(--primary); }
+
+.section-label {
+  font-size:.7rem; font-weight:700; text-transform:uppercase;
+  letter-spacing:.8px; color:var(--text-muted); margin-bottom:10px;
+}
+
+/* ─── Summary ─── */
+.summary-text { font-size:.88rem; color:var(--text-muted); line-height:1.6; font-style:italic;
+  background:var(--surface2); border-left:3px solid var(--primary); padding:12px 16px; border-radius:0 10px 10px 0; }
+
+/* ─── Skill tags ─── */
+.skill-cloud { display:flex; flex-wrap:wrap; gap:7px; }
+.skill-tag {
+  padding:5px 13px; border-radius:50px; font-size:.78rem; font-weight:600;
+  animation:fadeIn .3s ease-out both;
+}
+/* rotating colors */
+.skill-tag:nth-child(6n+1) { background:#dbeafe; color:#1d4ed8; }
+.skill-tag:nth-child(6n+2) { background:#dcfce7; color:#15803d; }
+.skill-tag:nth-child(6n+3) { background:#fce7f3; color:#9d174d; }
+.skill-tag:nth-child(6n+4) { background:#fef3c7; color:#92400e; }
+.skill-tag:nth-child(6n+5) { background:#ede9fe; color:#5b21b6; }
+.skill-tag:nth-child(6n+6) { background:#cffafe; color:#0e7490; }
+
+.lang-tag { background:#f0fdf4; color:#15803d; border:1px solid #86efac;
+  padding:5px 13px; border-radius:50px; font-size:.78rem; font-weight:600; }
+
+/* ─── Timeline ─── */
+.timeline { display:flex; flex-direction:column; gap:12px; }
+.timeline-item {
+  display:flex; gap:12px;
+}
+.tl-dot-wrap { display:flex; flex-direction:column; align-items:center; }
+.tl-dot { width:10px;height:10px;border-radius:50%;background:var(--primary);flex-shrink:0;margin-top:4px; }
+.tl-line { width:2px;flex:1;background:var(--border);margin-top:4px; }
+.tl-content { background:var(--surface2); border-radius:10px; padding:10px 14px; flex:1; border:1px solid var(--border); }
+.tl-title { font-weight:700; font-size:.88rem; }
+.tl-sub   { font-size:.78rem; color:var(--text-muted); margin-top:2px; }
+
+/* ─── Mail generator ─── */
+.mail-gen {
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.mail-gen-header {
+  background: linear-gradient(135deg,rgba(79,70,229,.08),rgba(6,182,212,.06));
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+}
+.mail-gen-header-title { font-weight:700; font-size:1rem; }
+.mail-gen-header-sub   { font-size:.78rem; color:var(--text-muted); }
+.ai-badge { background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff;
+  font-size:.7rem; font-weight:700; padding:3px 10px; border-radius:20px; letter-spacing:.3px; }
+.mail-gen-body { padding:20px; }
+.mail-output {
+  background:#0f172a; color:#e2e8f0; padding:18px; border-radius:12px;
+  font-size:.85rem; white-space:pre-wrap; max-height:360px; overflow-y:auto;
+  line-height:1.7; font-family:'Cascadia Code','Consolas',monospace;
+}
+.copy-row { display:flex; justify-content:flex-end; margin-top:10px; gap:8px; }
+
+/* ─── Raw JSON ─── */
+.raw-json { background:#1e293b; color:#94a3b8; padding:14px; border-radius:10px;
+  font-size:.75rem; max-height:240px; overflow-y:auto; white-space:pre-wrap; }
+
+/* ─── Empty ─── */
+.upload-prompt { text-align:center; padding:60px 20px;
+  background:var(--surface); border-radius:16px; border:2px dashed var(--border); }
+.upload-prompt-icon { font-size:4rem; opacity:.2; margin-bottom:12px; }
+
+/* ─── Card wrapper ─── */
+.cv-section { margin-bottom:24px; }

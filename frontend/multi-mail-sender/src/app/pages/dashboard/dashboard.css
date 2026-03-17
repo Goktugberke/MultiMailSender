@@ -1,0 +1,170 @@
+.page-wrap { max-width: 1080px; margin: 32px auto; padding: 0 20px 60px; }
+
+/* ─── Hero header ─── */
+.page-header {
+  margin-bottom: 28px;
+}
+.page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin: 0 0 6px;
+}
+.page-sub { color: var(--text-muted); font-size: 0.9rem; }
+
+/* ─── Stat cards ─── */
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 28px; }
+@media(max-width:768px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+
+.stat-card {
+  border-radius: 16px;
+  padding: 20px 18px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  animation: fadeUp 0.5s ease-out both;
+  cursor: default;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.stat-card::after {
+  content: '';
+  position: absolute;
+  right: -18px; bottom: -18px;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+}
+.stat-icon { font-size: 1.5rem; opacity: 0.85; margin-bottom: 8px; }
+.stat-num  { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+.stat-label { font-size: 0.75rem; opacity: 0.85; margin-top: 4px; font-weight: 500; letter-spacing: 0.3px; }
+
+.sc-blue   { background: linear-gradient(135deg,#4f46e5,#818cf8); box-shadow: 0 6px 20px rgba(79,70,229,0.3); }
+.sc-amber  { background: linear-gradient(135deg,#d97706,#fbbf24); box-shadow: 0 6px 20px rgba(217,119,6,0.3); }
+.sc-cyan   { background: linear-gradient(135deg,#0891b2,#22d3ee); box-shadow: 0 6px 20px rgba(8,145,178,0.3); }
+.sc-green  { background: linear-gradient(135deg,#059669,#34d399); box-shadow: 0 6px 20px rgba(5,150,105,0.3); }
+.sc-red    { background: linear-gradient(135deg,#dc2626,#f87171); box-shadow: 0 6px 20px rgba(220,38,38,0.3); }
+.sc-slate  { background: linear-gradient(135deg,#475569,#94a3b8); box-shadow: 0 6px 20px rgba(71,85,105,0.3); }
+.sc-orange { background: linear-gradient(135deg,#ea580c,#fb923c); box-shadow: 0 6px 20px rgba(234,88,12,0.3); }
+.sc-purple { background: linear-gradient(135deg,#7c3aed,#a78bfa); box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+
+/* ─── Alert badges ─── */
+.alert-strip {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;
+}
+.alert-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 50px;
+  font-size: 0.82rem; font-weight: 600;
+  animation: slideInRight 0.4s ease-out both;
+}
+.chip-warn { background: linear-gradient(135deg,#fff3cd,#fde68a); color:#92400e; border:1px solid #fcd34d; }
+.chip-info { background: linear-gradient(135deg,#cffafe,#a5f3fc); color:#0e7490; border:1px solid #67e8f9; }
+
+/* ─── Toolbar ─── */
+.toolbar-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:20px; }
+.filter-chip {
+  padding: 7px 16px; border-radius: 50px; border: 1.5px solid var(--border);
+  background: var(--surface); font-size: 0.82rem; font-weight: 500; cursor: pointer;
+  transition: all 0.2s; color: var(--text-muted);
+}
+.filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+.filter-chip.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 3px 10px rgba(79,70,229,0.3); }
+.chip-count { background: rgba(255,255,255,0.3); border-radius: 10px; padding: 1px 6px; font-size: 0.75rem; margin-left: 4px; }
+
+/* ─── Application list ─── */
+.app-list { display:flex; flex-direction:column; gap:10px; }
+
+.app-card {
+  background: var(--surface);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: fadeUp 0.4s ease-out both;
+}
+.app-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+.app-card-inner { display:flex; align-items:center; gap:14px; padding:14px 18px; }
+
+.status-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+}
+
+.company-info { flex: 1; min-width: 0; }
+.company-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+.company-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;
+  display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.meta-item { display:flex; align-items:center; gap:3px; }
+
+.date-badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+.date-badge {
+  font-size: 0.72rem; padding: 3px 10px; border-radius: 20px; font-weight: 500;
+  display: flex; align-items: center; gap: 4px;
+}
+.db-exam      { background:#fef3c7; color:#92400e; }
+.db-interview { background:#cffafe; color:#0e7490; }
+.db-followup  { background:#f0fdf4; color:#15803d; }
+
+.app-actions { display:flex; gap:6px; }
+.icon-btn {
+  width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface2); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition: all 0.2s; color: var(--text-muted); font-size: 0.9rem;
+}
+.icon-btn:hover { background: var(--primary); color:#fff; border-color:var(--primary); transform:translateY(-1px); }
+.icon-btn.danger:hover { background: var(--danger); border-color:var(--danger); }
+
+/* ─── Status badge colors ─── */
+.s-SENT        { background:#dbeafe; color:#1d4ed8; }
+.s-BOUNCED     { background:#fee2e2; color:#991b1b; }
+.s-REPLIED     { background:#cffafe; color:#0e7490; }
+.s-EXAM        { background:#fef3c7; color:#92400e; }
+.s-INTERVIEW   { background:#ede9fe; color:#5b21b6; }
+.s-REJECTED    { background:#f1f5f9; color:#475569; }
+.s-ACCEPTED    { background:#dcfce7; color:#15803d; }
+.s-WITHDRAWN   { background:#f1f5f9; color:#94a3b8; }
+
+.dot-SENT        { background:#3b82f6; }
+.dot-BOUNCED     { background:#ef4444; }
+.dot-REPLIED     { background:#06b6d4; }
+.dot-EXAM        { background:#f59e0b; }
+.dot-INTERVIEW   { background:#8b5cf6; }
+.dot-REJECTED    { background:#94a3b8; }
+.dot-ACCEPTED    { background:#10b981; }
+.dot-WITHDRAWN   { background:#cbd5e1; }
+
+/* ─── Edit panel ─── */
+.edit-panel {
+  background: #f8fafc;
+  border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ─── Empty state ─── */
+.empty-state {
+  text-align:center; padding: 60px 20px; color: var(--text-muted);
+  background: var(--surface); border-radius: 16px; border: 2px dashed var(--border);
+}
+.empty-icon { font-size: 3.5rem; margin-bottom: 12px; opacity: 0.3; }
+
+/* ─── Notes text ─── */
+.notes-text { font-size:0.78rem; color:var(--text-muted); font-style:italic; margin-top:3px; }
+
+/* ─── Days badge ─── */
+.days-badge { color: var(--text-muted); }
+.days-badge.days-warn { color: #ef4444; font-weight: 600; }
+
+/* ─── Bounce Panel ─── */
+.bounce-panel {
+  background: var(--surface);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+.bounce-panel-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }

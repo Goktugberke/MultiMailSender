@@ -2,8 +2,10 @@ package com.yunussemree.multimailsender.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yunussemree.multimailsender.model.ApiResponse;
+import com.yunussemree.multimailsender.model.CompanyData;
 import com.yunussemree.multimailsender.model.ProgressEvent;
 import com.yunussemree.multimailsender.model.Request;
+import com.yunussemree.multimailsender.service.ApplicationService;
 import com.yunussemree.multimailsender.service.MailSenderService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +24,16 @@ import java.util.concurrent.Executors;
 public class MailSenderController {
 
     private final MailSenderService mailSenderService;
+    private final ApplicationService applicationService;
 
     // SSE job infra under the same controller
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public MailSenderController(MailSenderService mailSenderService) {
+    public MailSenderController(MailSenderService mailSenderService, ApplicationService applicationService) {
         this.mailSenderService = mailSenderService;
+        this.applicationService = applicationService;
     }
     
      /**     * Endpoint to send multiple emails with attachments based on the provided request.
@@ -98,6 +102,15 @@ public class MailSenderController {
                 try {
                     emitter.send(SseEmitter.event().name("progress").data(toJson(evt)));
                 } catch (IOException e) {
+                }
+                // Basarili gonderimde basvuru kaydı olustur
+                if ("sent".equals(evt.getStatus()) && request.getCompanyData() != null
+                        && idx < request.getCompanyData().size()) {
+                    CompanyData company = request.getCompanyData().get(idx);
+                    String companyName = company.getParameters() != null
+                            ? company.getParameters().getOrDefault("companyName", company.getCompanyMail())
+                            : company.getCompanyMail();
+                    applicationService.createFromMailSend(companyName, company.getCompanyMail(), request.getSubject());
                 }
             });
             try {

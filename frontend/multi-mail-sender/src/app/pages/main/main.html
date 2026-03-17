@@ -1,244 +1,143 @@
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="m-0 gradient-text fade-down">Multi Mail Sender</h2>
-    <div class="toolbar d-flex">
-      <!-- Import/Export toolbar -->
-      <button
-        type="button"
-        class="btn btn-outline-secondary btn-animate me-2"
-        title="Import JSON"
-        (click)="importInput.click()"
-      >
-        <i class="bi bi-download"></i> Import
-      </button>
-      <button
-        type="button"
-        class="btn btn-primary btn-animate"
-        title="Export JSON"
-        (click)="exportJson()"
-      >
-        <i class="bi bi-upload"></i> Export
-      </button>
-      <input
-        #importInput
-        type="file"
-        accept="application/json,.json"
-        class="d-none"
-        (change)="onImportFileChange($event)"
-      />
+<div class="page-wrap fade-up">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="page-title g-text">Mail Gönder</h1>
+      <p class="page-sub">Birden fazla şirkete aynı anda kişiselleştirilmiş mail gönder</p>
     </div>
-  </div>
-
-  <div class="mb-3 d-flex align-items-center">
-    <label class="me-2 w-25">Email (Username)</label>
-    <input
-      type="email"
-      class="form-control form-control-custom flex-grow-1"
-      [(ngModel)]="request.username"
-      placeholder="example@gmail.com"
-    />
-    <i
-      class="bi bi-exclamation-circle-fill text-primary ms-2 info-icon"
-      ngbTooltip="Your Gmail address. This is used to send emails."
-      placement="right"
-    ></i>
-  </div>
-
-  <div class="mb-3 d-flex align-items-center">
-    <label class="me-2 w-25">App Password</label>
-    <input
-      type="password"
-      class="form-control form-control-custom flex-grow-1"
-      [(ngModel)]="request.password"
-      placeholder="App Password"
-    />
-    <i
-      class="bi bi-exclamation-circle-fill text-primary ms-2 info-icon"
-      ngbTooltip="Create an App Password in your Google Account. It is different from your normal password."
-      placement="right"
-    ></i>
-  </div>
-
-  <div class="mb-3 d-flex align-items-center">
-    <label class="me-2 w-25">Subject</label>
-    <input
-      type="text"
-      class="form-control form-control-custom flex-grow-1"
-      [(ngModel)]="request.subject"
-      placeholder="Mail Subject"
-    />
-    <i
-      class="bi bi-exclamation-circle-fill text-primary ms-2 info-icon"
-      ngbTooltip="E-mail subject."
-      placement="right"
-    ></i>
-  </div>
-
-  <div class="mb-3 position-relative">
-    <div class="d-flex align-items-start gap-3 flex-wrap">
-      <label class="w-25" style="min-width: 200px">Body Draft</label>
-      <textarea
-        rows="5"
-        class="form-control form-control-custom flex-grow-1"
-        [(ngModel)]="request.bodydraft"
-        placeholder="Dear {companyName}, ..."
-      ></textarea>
-    </div>
-    <i
-      class="bi bi-exclamation-circle-fill text-primary info-icon-textarea"
-      ngbTooltip="Use placeholders like {companyName} and {companyNumber}. They will be replaced with actual values."
-      placement="left"
-    ></i>
-  </div>
-
-  <div class="d-flex justify-content-between align-items-center">
-    <h5 class="mt-2 mb-2">Companies</h5>
     <div class="d-flex gap-2">
-      <button
-        class="btn btn-outline-danger btn-sm btn-animate"
-        (click)="clearDatas()"
-      >
-        <i class="bi bi-trash"></i> Clear datas
+      <button class="btn btn-outline-secondary btn-sm" title="Import JSON" (click)="importInput.click()">
+        <i class="bi bi-download me-1"></i>Import
       </button>
-      <button
-        class="btn btn-outline-primary btn-sm btn-animate"
-        (click)="addCompany()"
-      >
-        <i class="bi bi-plus"></i> Add new company
+      <button class="btn btn-primary btn-sm" title="Export JSON" (click)="exportJson()">
+        <i class="bi bi-upload me-1"></i>Export
       </button>
+      <input #importInput type="file" accept="application/json,.json" class="d-none" (change)="onImportFileChange($event)" />
     </div>
   </div>
 
-  <div
-    *ngFor="let c of request.companyData; let i = index; trackBy: trackByIndex"
-    class="card mb-3 animated-card"
-  >
-    <div
-      class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
-    >
-      <div>Company {{ i | addOne }}</div>
-      <button
-        type="button"
-        class="btn-close btn-close-white"
-        aria-label="Close"
-        (click)="removeCompany(i)"
-      ></button>
+  <!-- Credentials -->
+  <div class="field-row">
+    <span class="field-label"><i class="bi bi-envelope me-1"></i>Gmail</span>
+    <input type="email" class="form-control" [(ngModel)]="request.username" placeholder="example@gmail.com" />
+    <i class="bi bi-info-circle info-icon" ngbTooltip="Gmail adresiniz" placement="left"></i>
+  </div>
+  <div class="field-row">
+    <span class="field-label"><i class="bi bi-shield-lock me-1"></i>App Password</span>
+    <input type="password" class="form-control" [(ngModel)]="request.password" placeholder="Google App Password" />
+    <i class="bi bi-info-circle info-icon" ngbTooltip="Google hesabından oluşturulan uygulama şifresi" placement="left"></i>
+  </div>
+  <div class="field-row">
+    <span class="field-label"><i class="bi bi-tag me-1"></i>Konu</span>
+    <input type="text" class="form-control" [(ngModel)]="request.subject" placeholder="Staj Başvurusu - Ad Soyad" />
+    <i class="bi bi-info-circle info-icon" ngbTooltip="Mail konusu" placement="left"></i>
+  </div>
+
+  <!-- Body draft -->
+  <div class="body-wrap">
+    <div class="d-flex align-items-start gap-3 mb-1">
+      <span class="field-label pt-2"><i class="bi bi-body-text me-1"></i>Mail Metni</span>
+      <textarea class="form-control flex-grow-1" rows="5" [(ngModel)]="request.bodydraft"
+                placeholder="Sayın {companyName} İK Ekibi,&#10;&#10;..."></textarea>
     </div>
-    <div class="card-body">
-      <div class="mb-2">
-        <label class="form-label">Company Mail</label>
-        <input
-          type="email"
-          class="form-control form-control-custom"
-          [(ngModel)]="c.companyMail"
-          placeholder="company@example.com"
-        />
-      </div>
-
-      <div
-        class="mb-2"
-        *ngFor="
-          let entry of c.parameters | keyvalue;
-          trackBy: trackByParamKey;
-          let pi = index
-        "
-      >
-        <div class="d-flex align-items-center gap-2">
-          <label class="me-2" style="min-width: 120px">{{ entry.key }}</label>
-          <input
-            type="text"
-            class="form-control form-control-custom"
-            [(ngModel)]="c.parameters[entry.key]"
-            placeholder="Parameter value"
-          />
-          <button
-            type="button"
-            class="btn btn-danger btn-sm btn-animate"
-            (click)="removeParameter(c, entry.key)"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        class="btn btn-secondary btn-sm btn-animate"
-        (click)="addParameter(c)"
-      >
-        <i class="bi bi-plus"></i> New parameter
-      </button>
+    <div class="text-muted small ms-0" style="margin-left:152px">
+      <i class="bi bi-lightbulb me-1 text-warning"></i>
+      <code>&#123;companyName&#125;</code>, <code>&#123;companyNumber&#125;</code> gibi yer tutucular otomatik doldurulur.
     </div>
   </div>
 
-  <div class="mb-3">
-    <label class="form-label">PDF Attachment</label>
-    <input
-      type="file"
-      class="form-control form-control-custom"
-      (change)="onFileSelected($event)"
-      multiple
-    />
-    <div class="form-text">
-      Attachments are not included in JSON export/import. Credentials (email &
-      app password) are also excluded from Export.
-    </div>
+  <!-- Companies section -->
+  <div class="section-divider">
+    <i class="bi bi-buildings"></i> Şirketler
+    <span class="badge" style="background:var(--primary);color:#fff;font-size:.72rem">{{ request.companyData.length }}</span>
   </div>
 
-  <div class="mb-4">
-    <button class="btn btn-success w-100 btn-animate" (click)="sendMails()">
-      Send Mails
+  <div class="actions-bar">
+    <button class="btn btn-primary btn-sm" (click)="addCompany()">
+      <i class="bi bi-plus-lg me-1"></i>Şirket Ekle
+    </button>
+    <button class="btn btn-outline-danger btn-sm" (click)="clearDatas()">
+      <i class="bi bi-trash me-1"></i>Temizle
     </button>
   </div>
 
-  <div *ngIf="isSuccess === 0 && request.companyData.length && etaMaxSeconds" class="mb-3">
-    <div class="d-flex justify-content-between align-items-center">
-      <div>
-        <strong>Estimated remaining:</strong>
-        ~{{ etaMinSeconds }} - {{ etaMaxSeconds }} seconds
+  <div *ngFor="let c of request.companyData; let i = index; trackBy: trackByIndex" class="company-card">
+    <div class="company-card-header">
+      <span class="company-num">Şirket {{ i | addOne }}</span>
+      <button type="button" class="btn-close btn-close-white btn-sm" (click)="removeCompany(i)"></button>
+    </div>
+    <div class="company-card-body">
+      <div class="field-row mb-3">
+        <span class="field-label" style="min-width:100px">E-posta</span>
+        <input type="email" class="form-control form-control-sm" [(ngModel)]="c.companyMail" placeholder="info@sirket.com" />
       </div>
-      <div><strong>Progress:</strong> {{ progress.length }}/{{ request.companyData.length }}</div>
+      <div *ngFor="let entry of c.parameters | keyvalue; trackBy: trackByParamKey" class="param-row">
+        <span class="param-key">{{ entry.key }}</span>
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="c.parameters[entry.key]"
+               placeholder="Değer..." />
+        <button class="btn btn-outline-danger btn-sm" style="border-radius:8px;padding:4px 10px"
+                (click)="removeParameter(c, entry.key)">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+      <button class="btn btn-outline-secondary btn-sm mt-1" style="border-radius:8px" (click)="addParameter(c)">
+        <i class="bi bi-plus me-1"></i>Parametre Ekle
+      </button>
     </div>
-    <div class="progress mt-2" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-      <div
-        class="progress-bar"
-        [style.width]="(progress.length / request.companyData.length) * 100 + '%'"
-      ></div>
+  </div>
+
+  <!-- Attachment -->
+  <div class="section-divider"><i class="bi bi-paperclip"></i>Ek Dosya</div>
+  <label class="file-upload-area mb-4">
+    <i class="bi bi-file-earmark-pdf fs-4 text-danger"></i>
+    <div class="file-label">
+      <span *ngIf="files.length === 0">PDF veya belge sürükle-bırak ya da seç</span>
+      <strong *ngIf="files.length > 0">{{ files.length }} dosya seçildi: {{ files[0]?.name }}</strong>
     </div>
-    <ul class="list-group mt-3">
-      <li class="list-group-item" *ngFor="let p of progress">
-        <span class="badge me-2" [ngClass]="p.status === 'sent' ? 'bg-success' : 'bg-danger'">
-          {{ p.status }}
-        </span>
-        {{ p.companyMail || p.email }}
-        <span class="text-muted" *ngIf="p.message">- {{ p.message }}</span>
+    <input type="file" class="d-none" (change)="onFileSelected($event)" multiple />
+    <span class="btn btn-outline-secondary btn-sm">Seç</span>
+  </label>
+
+  <!-- Send button -->
+  <button class="btn w-100 send-btn" (click)="sendMails()">
+    <i class="bi bi-send-fill me-2"></i>Mail Gönder
+  </button>
+
+  <!-- Progress -->
+  <div class="progress-wrap fade-in" *ngIf="isSuccess === 0 && request.companyData.length && etaMaxSeconds">
+    <div class="eta-row">
+      <span><strong>Tahmini süre:</strong> {{ etaMinSeconds }} – {{ etaMaxSeconds }} sn</span>
+      <span><strong>İlerleme:</strong> {{ progress.length }} / {{ request.companyData.length }}</span>
+    </div>
+    <div class="progress">
+      <div class="progress-bar" [style.width]="(progress.length / request.companyData.length) * 100 + '%'"></div>
+    </div>
+    <ul class="progress-list">
+      <li *ngFor="let p of progress">
+        <span [class]="p.status === 'sent' ? 'p-badge-sent' : 'p-badge-error'">{{ p.status }}</span>
+        <span>{{ p.companyMail || p.email }}</span>
+        <span class="text-muted ms-auto" *ngIf="p.message">{{ p.message }}</span>
       </li>
     </ul>
   </div>
 
-  <ngb-alert
-    *ngIf="responseMessage"
-    [type]="isSuccess === 1 ? 'success' : isSuccess === -1 ? 'danger' : 'info'"
-  >
+  <ngb-alert *ngIf="responseMessage && (isSuccess === 1 || isSuccess === -1)"
+             class="mt-3"
+             [type]="isSuccess === 1 ? 'success' : 'danger'">
+    <i class="bi me-2" [class.bi-check-circle-fill]="isSuccess===1" [class.bi-x-circle-fill]="isSuccess===-1"></i>
     {{ responseMessage }}
   </ngb-alert>
+</div>
 
-  <div class="fixed-bottom d-flex align-items-center p-3 bg-light border-top">
-    <div>
-      <strong>Server Status:</strong>
-      <span
-        [ngClass]="
-          serverStatus === 'Server is running' ? 'text-success' : 'text-danger'
-        "
-      >
-        {{ serverStatus }}
-      </span>
-    </div>
-    <button
-      class="btn mx-3 btn-outline-info btn-animate"
-      (click)="checkServer()"
-    >
-      Check Server Status
-    </button>
-  </div>
+<!-- Status Bar -->
+<div class="status-footer">
+  <div class="server-dot" [class.dot-green]="serverStatus === 'Server is running'" [class.dot-red]="serverStatus !== 'Server is running'"></div>
+  <span [class.server-text-up]="serverStatus === 'Server is running'" [class.server-text-down]="serverStatus !== 'Server is running'">
+    {{ serverStatus === 'Server is running' ? 'Backend Çalışıyor' : 'Backend Çevrimdışı' }}
+  </span>
+  <button class="btn btn-sm btn-outline-secondary ms-2" style="color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.2)"
+          (click)="checkServer()">
+    <i class="bi bi-arrow-clockwise me-1"></i>Kontrol Et
+  </button>
 </div>

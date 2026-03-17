@@ -1,0 +1,67 @@
+.app-navbar {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+  padding: 0 !important;
+  min-height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.navbar-brand {
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.3px;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.brand-text {
+  background: linear-gradient(135deg, #a5b4fc, #67e8f9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255,255,255,0.65) !important;
+  border-radius: 10px;
+  padding: 7px 14px !important;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 1px;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #fff !important;
+  background: rgba(255,255,255,0.1);
+}
+
+.navbar-nav .nav-link.active {
+  color: #fff !important;
+  background: linear-gradient(135deg, rgba(79,70,229,0.6), rgba(6,182,212,0.4));
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.12) inset;
+}
+
+.nav-icon {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}

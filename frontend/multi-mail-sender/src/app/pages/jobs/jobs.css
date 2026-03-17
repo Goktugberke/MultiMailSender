@@ -1,0 +1,146 @@
+.page-wrap { max-width: 1200px; margin: 32px auto; padding: 0 20px 60px; }
+
+/* ─── Header ─── */
+.page-title { font-size:2rem; font-weight:800; letter-spacing:-.5px; margin:0 0 6px; }
+.page-sub   { color:var(--text-muted); font-size:.9rem; }
+.page-header { margin-bottom:28px; }
+
+/* ─── Search bar ─── */
+.search-bar {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 14px 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+.search-bar .form-control { flex:1; min-width:200px; }
+
+/* ─── Source tabs ─── */
+.source-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+.source-tab {
+  padding: 7px 16px; border-radius: 50px;
+  font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  border: 1.5px solid transparent; transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.source-tab .tab-count {
+  background: rgba(0,0,0,0.12); border-radius: 10px;
+  padding: 1px 6px; font-size: 0.72rem; font-weight: 700;
+}
+.source-tab.all-tab { background:#f1f5f9; color:#475569; border-color:#e2e8f0; }
+.source-tab.all-tab.active { background:#0f172a; color:#fff; border-color:#0f172a; }
+
+/* Source colors */
+.st-rementist  { background:#ede9fe; color:#5b21b6; border-color:#c4b5fd; }
+.st-youthall   { background:#e0f2fe; color:#075985; border-color:#7dd3fc; }
+.st-savunma    { background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
+.st-kariyer    { background:#d1fae5; color:#065f46; border-color:#6ee7b7; }
+.st-indeed     { background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
+.st-secret     { background:#fce7f3; color:#9d174d; border-color:#f9a8d4; }
+.st-yenibiris  { background:#fef3c7; color:#92400e; border-color:#fcd34d; }
+.st-eleman     { background:#f0fdf4; color:#14532d; border-color:#86efac; }
+
+.source-tab.active { filter: saturate(1.5) brightness(0.85); box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+
+/* ─── Results header ─── */
+.results-info { font-size:.82rem; color:var(--text-muted); margin-bottom:14px;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+.results-count { font-weight:600; color:var(--text); }
+
+/* ─── Cards grid ─── */
+.jobs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+
+.job-card {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex; flex-direction: column; gap: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: fadeUp 0.4s ease-out both;
+}
+.job-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+.card-top { display:flex; justify-content:space-between; align-items:flex-start; }
+.source-pill {
+  font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+.cat-pill {
+  font-size: 0.7rem; padding: 4px 10px; border-radius: 20px;
+  background: var(--surface2); color: var(--text-muted); font-weight: 500;
+}
+
+.job-title {
+  font-size: 0.95rem; font-weight: 700; color: var(--text); line-height: 1.3;
+}
+
+.company-row { display:flex; align-items:center; gap:6px; }
+.company-avatar {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg,#818cf8,#6ee7b7);
+  display:flex; align-items:center; justify-content:center;
+  font-size: 0.75rem; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.company-details { font-size:0.82rem; }
+.company-name-txt { font-weight:600; color:var(--text); }
+.location-txt { color:var(--text-muted); font-size:0.78rem; }
+
+.job-desc { font-size:0.78rem; color:var(--text-muted); line-height:1.5;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+.card-footer-row { display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
+.posted-date { font-size:0.72rem; color:var(--text-muted); }
+
+.apply-btn {
+  padding: 7px 16px; border-radius: 10px; font-size: 0.8rem; font-weight: 600;
+  text-decoration: none; display:inline-flex; align-items:center; gap:5px;
+  background: linear-gradient(135deg,var(--primary),#7c3aed);
+  color: #fff; border: none; transition: all 0.2s;
+}
+.apply-btn:hover { filter:brightness(1.1); transform:translateY(-1px); color:#fff;
+  box-shadow: 0 4px 12px rgba(79,70,229,0.35); }
+
+/* ─── Source pill colors (same naming as source-tab) ─── */
+.sp-rementist { background:#ede9fe; color:#5b21b6; }
+.sp-youthall  { background:#e0f2fe; color:#075985; }
+.sp-savunma   { background:#fee2e2; color:#991b1b; }
+.sp-kariyer   { background:#d1fae5; color:#065f46; }
+.sp-indeed    { background:#dbeafe; color:#1e40af; }
+.sp-secret    { background:#fce7f3; color:#9d174d; }
+.sp-yenibiris { background:#fef3c7; color:#92400e; }
+.sp-eleman    { background:#f0fdf4; color:#14532d; }
+.sp-default   { background:#f1f5f9; color:#475569; }
+
+/* ─── Loading / empty ─── */
+.skeleton-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+.skeleton-card { height:160px; }
+
+.empty-state {
+  text-align:center; padding:60px 20px; color:var(--text-muted);
+  background:var(--surface); border-radius:16px; border:2px dashed var(--border);
+  margin-top:10px;
+}
+.empty-icon { font-size:3.5rem; margin-bottom:12px; opacity:.25; }
+
+/* ─── Loading bar ─── */
+.loading-info { display:flex; flex-direction:column; align-items:center; gap:12px; padding:48px; }
+.loading-spinner-wrap { position:relative; width:60px; height:60px; }
+.loading-spinner-wrap .spinner-border { width:60px;height:60px;border-width:4px;color:var(--primary); }
+.loading-label { font-size:.85rem; color:var(--text-muted); animation: pulse-ring 2s infinite; }
+
+/* refresh button glow */
+.btn-refresh-glow {
+  background: linear-gradient(135deg,#4f46e5,#06b6d4);
+  color:#fff; border:none; border-radius:50px;
+  padding:8px 20px; font-size:.82rem; font-weight:600;
+  transition:all .2s;
+}
+.btn-refresh-glow:hover { filter:brightness(1.1); transform:translateY(-1px);
+  box-shadow:0 4px 14px rgba(79,70,229,.4); color:#fff; }

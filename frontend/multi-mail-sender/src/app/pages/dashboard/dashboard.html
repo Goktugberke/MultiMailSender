@@ -1,0 +1,204 @@
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="page-header fade-up">
+    <h1 class="page-title g-text">Başvuru Takip Paneli</h1>
+    <p class="page-sub">Tüm başvurularını tek yerden yönet, tarihleri ve durumları takip et.</p>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stats-grid">
+    <div class="stat-card {{ c.cls }}" *ngFor="let c of statCards; let i = index"
+         [style.animation-delay]="(i * 0.05) + 's'">
+      <div class="stat-icon"><i class="bi {{ c.icon }}"></i></div>
+      <div class="stat-num">{{ statusOf(stats[c.key]) }}</div>
+      <div class="stat-label">{{ c.label }}</div>
+    </div>
+  </div>
+
+  <!-- Yaklaşan uyarılar -->
+  <div class="alert-strip" *ngIf="hasUpcomingAlert()">
+    <div class="alert-chip chip-warn" *ngIf="(stats['UPCOMING_EXAMS'] ?? 0) > 0">
+      <i class="bi bi-pencil-square"></i>
+      <strong>{{ stats['UPCOMING_EXAMS'] }}</strong> sınav bu hafta!
+    </div>
+    <div class="alert-chip chip-info" *ngIf="(stats['UPCOMING_FOLLOW_UPS'] ?? 0) > 0">
+      <i class="bi bi-alarm"></i>
+      <strong>{{ stats['UPCOMING_FOLLOW_UPS'] }}</strong> takip hatırlatması 3 gün içinde
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-danger mb-3">
+    <i class="bi bi-exclamation-circle me-2"></i>{{ error }}
+  </div>
+
+  <!-- Toolbar: filtre chips + yenile + bounce -->
+  <div class="toolbar-row">
+    <button class="filter-chip" [class.active]="activeFilter === ''" (click)="setFilter('')">
+      Tümü <span class="chip-count">{{ applications.length }}</span>
+    </button>
+    <button class="filter-chip" *ngFor="let s of statuses"
+            [class.active]="activeFilter === s" (click)="setFilter(s)">
+      {{ statusLabels[s] }}
+      <span class="chip-count">{{ statusOf(stats[s]) }}</span>
+    </button>
+    <div class="ms-auto d-flex gap-2">
+      <button class="btn btn-outline-secondary" style="border-radius:50px;font-size:.82rem" (click)="load()">
+        <i class="bi bi-arrow-clockwise me-1"></i>Yenile
+      </button>
+      <button class="btn btn-outline-warning" style="border-radius:50px;font-size:.82rem"
+              (click)="showBouncePanel = !showBouncePanel">
+        <i class="bi bi-envelope-x me-1"></i>Bounce Kontrol
+      </button>
+    </div>
+  </div>
+
+  <!-- Bounce Panel -->
+  <div class="bounce-panel fade-in" *ngIf="showBouncePanel">
+    <div class="bounce-panel-title"><i class="bi bi-envelope-x me-2"></i>Geri Dönen Mailleri Kontrol Et</div>
+    <p class="text-muted small mb-3">Gmail INBOX taranarak geri dönen mailler otomatik BOUNCED olarak işaretlenir.</p>
+    <div class="row g-2">
+      <div class="col-md-5">
+        <input type="email" class="form-control form-control-sm" [(ngModel)]="bounceEmail"
+               placeholder="Gmail adresin" />
+      </div>
+      <div class="col-md-5">
+        <input type="password" class="form-control form-control-sm" [(ngModel)]="bouncePassword"
+               placeholder="Google App Password" />
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-warning btn-sm w-100" (click)="checkBounces()"
+                [disabled]="bounceChecking || !bounceEmail || !bouncePassword">
+          <span *ngIf="!bounceChecking"><i class="bi bi-search me-1"></i>Tara</span>
+          <span *ngIf="bounceChecking"><span class="spinner-border spinner-border-sm"></span></span>
+        </button>
+      </div>
+    </div>
+    <div *ngIf="bounceMessage" class="alert mt-2 mb-0"
+         [class.alert-success]="!bounceMessage.includes('hata')"
+         [class.alert-danger]="bounceMessage.includes('hata')">
+      {{ bounceMessage }}
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" style="display:flex;flex-direction:column;gap:10px">
+    <div class="skeleton" style="height:70px"></div>
+    <div class="skeleton" style="height:70px"></div>
+    <div class="skeleton" style="height:70px"></div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && filtered.length === 0" class="empty-state fade-in">
+    <div class="empty-icon"><i class="bi bi-inbox"></i></div>
+    <h5 class="fw-700">Henüz başvuru yok</h5>
+    <p class="mb-0 small">Mail gönderince başvurular buraya otomatik eklenir.</p>
+  </div>
+
+  <!-- Application List -->
+  <div class="app-list" *ngIf="!loading && filtered.length > 0">
+    <div class="app-card" *ngFor="let app of filtered; trackBy: trackById">
+
+      <!-- Normal view -->
+      <div class="app-card-inner" *ngIf="editingId !== app.id">
+        <div class="status-dot dot-{{ app.status }}"></div>
+
+        <div class="company-info">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="company-name">{{ app.companyName }}</span>
+            <span class="badge s-{{ app.status }} px-2 py-1" style="font-size:.72rem">
+              {{ statusLabels[app.status] }}
+            </span>
+          </div>
+          <div class="company-meta">
+            <span class="meta-item"><i class="bi bi-envelope"></i>{{ app.companyMail }}</span>
+            <span class="meta-item" *ngIf="app.positionTitle">
+              <i class="bi bi-briefcase"></i>{{ app.positionTitle }}
+            </span>
+            <span class="meta-item" *ngIf="app.sentAt">
+              <i class="bi bi-calendar3"></i>{{ app.sentAt | date:'dd MMM yyyy' }}
+            </span>
+            <span class="meta-item days-badge"
+                  [class.days-warn]="app.status === 'SENT' && daysSince(app.sentAt) > 14"
+                  *ngIf="app.sentAt">
+              <i class="bi bi-clock-history"></i>{{ daysSince(app.sentAt) }} gün önce
+            </span>
+          </div>
+          <div class="date-badges">
+            <span class="date-badge db-exam" *ngIf="app.examDate">
+              <i class="bi bi-pencil-square"></i>Sınav: {{ app.examDate | date:'dd MMM HH:mm' }}
+            </span>
+            <span class="date-badge db-interview" *ngIf="app.interviewDate">
+              <i class="bi bi-person-video3"></i>Mülakat: {{ app.interviewDate | date:'dd MMM HH:mm' }}
+            </span>
+            <span class="date-badge db-followup" *ngIf="app.followUpDate">
+              <i class="bi bi-alarm"></i>Takip: {{ app.followUpDate | date:'dd MMM HH:mm' }}
+            </span>
+          </div>
+          <div class="notes-text" *ngIf="app.notes">{{ app.notes }}</div>
+        </div>
+
+        <div class="app-actions">
+          <button class="icon-btn" (click)="startEdit(app)" title="Düzenle">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="icon-btn danger" (click)="delete(app.id!)" title="Sil">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Edit panel -->
+      <div *ngIf="editingId === app.id">
+        <div class="app-card-inner" style="border-bottom:1px solid var(--border);padding-bottom:12px">
+          <div class="status-dot dot-{{ app.status }}"></div>
+          <div class="company-info">
+            <span class="company-name">{{ app.companyName }}</span>
+            <span class="company-meta ms-2 d-inline">— düzenleniyor</span>
+          </div>
+          <button class="icon-btn" (click)="cancelEdit()"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="edit-panel">
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Pozisyon</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editPatch.positionTitle" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Durum</label>
+              <select class="form-select form-select-sm" [(ngModel)]="editPatch.status">
+                <option *ngFor="let s of statuses" [value]="s">{{ statusLabels[s] }}</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Sınav Tarihi</label>
+              <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="editPatch.examDate" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Mülakat Tarihi</label>
+              <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="editPatch.interviewDate" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Takip Tarihi</label>
+              <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="editPatch.followUpDate" />
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Notlar</label>
+              <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="editPatch.notes"
+                        placeholder="İK ismi, görüşme notları, hatırlatmalar..."></textarea>
+            </div>
+            <div class="col-12 d-flex gap-2">
+              <button class="btn btn-success btn-sm" (click)="saveEdit(app.id!)">
+                <i class="bi bi-check-lg me-1"></i>Kaydet
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" (click)="cancelEdit()">İptal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

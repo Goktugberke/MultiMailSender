@@ -1,0 +1,157 @@
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="page-header fade-up">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+      <div>
+        <h1 class="page-title g-text">Şirket Listesi</h1>
+        <p class="page-sub">Şirketleri yönet, filtrele, JSON dosyalarından aktar</p>
+      </div>
+      <div class="d-flex gap-2">
+        <label class="btn btn-outline-secondary btn-sm" style="border-radius:50px">
+          <i class="bi bi-download me-1"></i>JSON İçe Aktar
+          <input type="file" accept=".json,application/json" class="d-none" (change)="onImportFile($event)" />
+        </label>
+        <button class="btn btn-primary btn-sm" style="border-radius:50px" (click)="showAddForm = !showAddForm">
+          <i class="bi bi-plus-lg me-1"></i>Şirket Ekle
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div *ngIf="error"   class="alert alert-danger   fade-in">{{ error }}</div>
+  <div *ngIf="success" class="alert alert-success  fade-in">{{ success }}</div>
+
+  <!-- Add Form -->
+  <div class="add-form fade-in" *ngIf="showAddForm">
+    <div class="add-form-title"><i class="bi bi-plus-circle me-2"></i>Yeni Şirket</div>
+    <div class="row g-2">
+      <div class="col-md-3">
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="newItem.companyName"
+               placeholder="Şirket Adı *" />
+      </div>
+      <div class="col-md-3">
+        <input type="email" class="form-control form-control-sm" [(ngModel)]="newItem.companyMail"
+               placeholder="E-posta" />
+      </div>
+      <div class="col-md-2">
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="newItem.city"
+               placeholder="Şehir" />
+      </div>
+      <div class="col-md-2">
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="newItem.companyWebsite"
+               placeholder="Website" />
+      </div>
+      <div class="col-md-2">
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="newItem.companyNumber"
+               placeholder="Tel" />
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-success btn-sm" (click)="add()"><i class="bi bi-check me-1"></i>Kaydet</button>
+        <button class="btn btn-outline-secondary btn-sm" (click)="showAddForm = false">İptal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- City Filter Chips -->
+  <div class="city-chips" *ngIf="cities.length">
+    <button class="city-chip" [class.active]="filterCity === ''" (click)="setCity('')">
+      Tümü <span class="chip-count">{{ companies.length }}</span>
+    </button>
+    <button class="city-chip" *ngFor="let c of cities"
+            [class.active]="filterCity === c" (click)="setCity(c)">
+      {{ c }}
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-row">
+    <div class="input-group input-group-sm">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="form-control" [(ngModel)]="filterSearch"
+             placeholder="Şirket ara..." (keydown.enter)="search()" />
+      <button class="btn btn-outline-secondary" (click)="search()">Ara</button>
+      <button class="btn btn-outline-danger" (click)="clearFilter()" *ngIf="filterCity || filterSearch">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" style="display:flex;flex-direction:column;gap:8px">
+    <div class="skeleton" style="height:58px"></div>
+    <div class="skeleton" style="height:58px"></div>
+    <div class="skeleton" style="height:58px"></div>
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading && companies.length === 0" class="empty-state fade-in">
+    <div class="empty-icon"><i class="bi bi-buildings"></i></div>
+    <h5 class="fw-700">Şirket bulunamadı</h5>
+    <p class="mb-0 small">Yeni şirket ekle veya JSON dosyası içe aktar.</p>
+  </div>
+
+  <!-- Company Table -->
+  <div class="company-table" *ngIf="!loading && companies.length > 0">
+    <div class="company-row" *ngFor="let c of companies; trackBy: trackById">
+
+      <!-- Normal View -->
+      <ng-container *ngIf="editingId !== c.id">
+        <div class="city-tag">{{ c.city || '—' }}</div>
+        <div class="co-main">
+          <div class="co-name">{{ c.companyName }}</div>
+          <div class="co-meta">
+            <span *ngIf="c.companyMail"><i class="bi bi-envelope me-1"></i>{{ c.companyMail }}</span>
+            <a *ngIf="c.companyWebsite" [href]="c.companyWebsite" target="_blank" class="co-link">
+              <i class="bi bi-globe2 me-1"></i>Site
+            </a>
+            <span *ngIf="c.companyNumber"><i class="bi bi-telephone me-1"></i>{{ c.companyNumber }}</span>
+          </div>
+        </div>
+        <div class="co-actions">
+          <button class="icon-btn" (click)="startEdit(c)" title="Düzenle"><i class="bi bi-pencil"></i></button>
+          <button class="icon-btn danger" (click)="delete(c.id!)" title="Sil"><i class="bi bi-trash"></i></button>
+        </div>
+      </ng-container>
+
+      <!-- Edit View -->
+      <ng-container *ngIf="editingId === c.id">
+        <div class="edit-row-inner">
+          <div class="row g-2 flex-grow-1">
+            <div class="col-md-3">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editItem.companyName"
+                     placeholder="Şirket Adı" />
+            </div>
+            <div class="col-md-3">
+              <input type="email" class="form-control form-control-sm" [(ngModel)]="editItem.companyMail"
+                     placeholder="E-posta" />
+            </div>
+            <div class="col-md-2">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editItem.city"
+                     placeholder="Şehir" />
+            </div>
+            <div class="col-md-2">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editItem.companyWebsite"
+                     placeholder="Website" />
+            </div>
+            <div class="col-md-2">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editItem.companyNumber"
+                     placeholder="Tel" />
+            </div>
+          </div>
+          <div class="d-flex gap-2 align-items-center ms-2">
+            <button class="btn btn-success btn-sm" (click)="saveEdit(c.id!)">
+              <i class="bi bi-check-lg"></i>
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" (click)="cancelEdit()">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+
+</div>

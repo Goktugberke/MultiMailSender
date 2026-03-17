@@ -1,0 +1,213 @@
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="page-header fade-up">
+    <h1 class="page-title g-text">CV & Profil</h1>
+    <p class="page-sub">CV'ni yükle, yapay zeka ile analiz et, şirkete özel mail üret</p>
+  </div>
+
+  <!-- AI Status Banner -->
+  <div class="ai-banner fade-up" [class.ok]="aiConfigured === true" [class.warn]="aiConfigured === false"
+       style="animation-delay:.05s" *ngIf="aiConfigured !== null">
+    <i class="ai-icon bi" [class.bi-stars]="aiConfigured" [class.bi-key-fill]="!aiConfigured"></i>
+    <div>
+      <strong>{{ aiConfigured ? 'Gemini AI bağlı ve hazır' : 'Gemini API key ayarlanmamış' }}</strong>
+      <div *ngIf="!aiConfigured" class="mt-1">
+        <a href="https://aistudio.google.com/apikey" target="_blank" style="color:inherit;font-weight:700">
+          Google AI Studio
+        </a>'dan ücretsiz anahtar al, <code>application.properties</code>'e ekle.
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div *ngIf="error"   class="alert alert-danger   fade-in">{{ error }}</div>
+  <div *ngIf="success" class="alert alert-success  fade-in">{{ success }}</div>
+
+  <!-- Upload zone (her zaman görünür) -->
+  <div class="cv-section fade-up" style="animation-delay:.1s">
+    <label class="upload-zone">
+      <input type="file" accept=".pdf" class="d-none" (change)="onFileSelected($event)" [disabled]="uploading" />
+      <div *ngIf="!uploading">
+        <div class="upload-icon"><i class="bi bi-file-earmark-arrow-up"></i></div>
+        <div class="upload-title">{{ profile ? 'CV\'ni Güncelle' : 'CV Yükle' }}</div>
+        <div class="upload-sub">PDF formatında sürükle-bırak veya seç</div>
+        <span class="upload-btn-label"><i class="bi bi-upload me-1"></i>PDF Seç</span>
+      </div>
+      <div *ngIf="uploading" class="py-3">
+        <div class="spinner-border text-primary mb-3" style="width:3rem;height:3rem"></div>
+        <div class="upload-title">Yükleniyor ve analiz ediliyor...</div>
+        <div class="upload-sub">Bu 10-20 saniye sürebilir</div>
+      </div>
+    </label>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" style="width:3rem;height:3rem"></div>
+  </div>
+
+  <!-- Profile Card -->
+  <div class="cv-section fade-up" style="animation-delay:.15s" *ngIf="profile && !loading">
+
+    <!-- Hero -->
+    <div class="profile-hero">
+      <div class="profile-avatar">
+        {{ parsedAnalysis?.name ? parsedAnalysis.name[0].toUpperCase() : '?' }}
+      </div>
+      <div class="profile-name">{{ parsedAnalysis?.name || profile.fileName }}</div>
+      <div class="profile-email" *ngIf="parsedAnalysis?.email">
+        <i class="bi bi-envelope me-1"></i>{{ parsedAnalysis.email }}
+        <span *ngIf="parsedAnalysis?.phone" class="ms-3">
+          <i class="bi bi-telephone me-1"></i>{{ parsedAnalysis.phone }}
+        </span>
+      </div>
+      <div class="profile-file-info">
+        <i class="bi bi-file-earmark-pdf"></i>{{ profile.fileName }}
+        <button class="btn btn-sm ms-2" style="background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:8px;padding:2px 10px;font-size:.75rem"
+                (click)="reanalyze()" [disabled]="reanalyzing">
+          <span *ngIf="!reanalyzing"><i class="bi bi-arrow-clockwise me-1"></i>Yeniden Analiz</span>
+          <span *ngIf="reanalyzing"><span class="spinner-border spinner-border-sm me-1"></span>Analiz...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Profile body (parsed analysis) -->
+    <div class="profile-body" *ngIf="parsedAnalysis">
+
+      <!-- Meta info -->
+      <div class="info-row">
+        <span class="info-chip" *ngIf="parsedAnalysis.location">
+          <i class="bi bi-geo-alt-fill"></i>{{ parsedAnalysis.location }}
+        </span>
+        <span class="info-chip" *ngFor="let l of parsedAnalysis.languages">
+          <i class="bi bi-translate"></i>{{ l }}
+        </span>
+      </div>
+
+      <!-- Summary -->
+      <div class="mb-4" *ngIf="parsedAnalysis.summary">
+        <div class="section-label">Özet</div>
+        <div class="summary-text">{{ parsedAnalysis.summary }}</div>
+      </div>
+
+      <!-- Skills -->
+      <div class="mb-4" *ngIf="parsedAnalysis.skills?.length">
+        <div class="section-label">Beceriler</div>
+        <div class="skill-cloud">
+          <span class="skill-tag" *ngFor="let s of parsedAnalysis.skills">{{ s }}</span>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Education -->
+        <div class="col-md-6" *ngIf="parsedAnalysis.education?.length">
+          <div class="section-label">Eğitim</div>
+          <div class="timeline">
+            <div class="timeline-item" *ngFor="let e of parsedAnalysis.education; let last=last">
+              <div class="tl-dot-wrap">
+                <div class="tl-dot"></div>
+                <div class="tl-line" *ngIf="!last"></div>
+              </div>
+              <div class="tl-content">
+                <div class="tl-title">{{ e.degree }}</div>
+                <div class="tl-sub">{{ e.school }} &bull; {{ e.year }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Experience -->
+        <div class="col-md-6" *ngIf="parsedAnalysis.experience?.length">
+          <div class="section-label">Deneyim</div>
+          <div class="timeline">
+            <div class="timeline-item" *ngFor="let ex of parsedAnalysis.experience; let last=last">
+              <div class="tl-dot-wrap">
+                <div class="tl-dot" style="background:#10b981"></div>
+                <div class="tl-line" *ngIf="!last"></div>
+              </div>
+              <div class="tl-content">
+                <div class="tl-title">{{ ex.title }}</div>
+                <div class="tl-sub">{{ ex.company }} &bull; {{ ex.duration }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Raw analysis (if JSON parse failed) -->
+    <div class="profile-body" *ngIf="!parsedAnalysis">
+      <div class="section-label mb-2">Ham Analiz</div>
+      <pre class="raw-json">{{ profile.analysisJson }}</pre>
+    </div>
+  </div>
+
+  <!-- Mail Generator -->
+  <div class="mail-gen cv-section fade-up" style="animation-delay:.2s" *ngIf="profile">
+    <div class="mail-gen-header">
+      <div>
+        <div class="mail-gen-header-title d-flex align-items-center gap-2">
+          <i class="bi bi-magic text-warning"></i> Şirkete Özel Mail Üret
+          <span class="ai-badge">Gemini AI</span>
+        </div>
+        <div class="mail-gen-header-sub">CV profiline göre tamamen kişiselleştirilmiş mail oluşturur</div>
+      </div>
+    </div>
+    <div class="mail-gen-body">
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Şirket Adı <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="genCompany"
+                 placeholder="ASELSAN, Baykar, STM..." />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Pozisyon / Konu</label>
+          <input type="text" class="form-control" [(ngModel)]="genPosition"
+                 placeholder="Yazılım Stajyeri, Backend Developer..." />
+        </div>
+        <div class="col-12">
+          <label class="form-label small fw-semibold">
+            Şirket Web Sitesi
+            <span class="text-muted fw-normal">(opsiyonel — daha kişiselleştirilmiş mail için)</span>
+          </label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-globe2"></i></span>
+            <input type="url" class="form-control" [(ngModel)]="genWebsite"
+                   placeholder="https://sirket.com/hakkimizda" />
+          </div>
+          <div class="form-text text-muted">URL girilirse site scrape edilerek AI mail içeriğine dahil edilir.</div>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-warning fw-semibold px-5" (click)="generateMail()" [disabled]="generating || !aiConfigured">
+            <span *ngIf="!generating">
+              <i class="bi me-1" [class.bi-stars]="!genWebsite.trim()" [class.bi-globe2]="genWebsite.trim()"></i>
+              {{ genWebsite.trim() ? 'Web + AI Mail Üret' : 'Mail Üret' }}
+            </span>
+            <span *ngIf="generating"><span class="spinner-border spinner-border-sm me-1"></span>Üretiliyor...</span>
+          </button>
+          <span *ngIf="!aiConfigured" class="ms-3 text-muted small">API key gerekli</span>
+        </div>
+      </div>
+
+      <div *ngIf="generatedMail">
+        <div class="section-label mb-2">Oluşturulan Mail</div>
+        <div class="mail-output">{{ generatedMail }}</div>
+        <div class="copy-row">
+          <button class="btn btn-outline-secondary btn-sm" (click)="copyMail()">
+            <i class="bi bi-clipboard me-1"></i>Kopyala
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state (no profile) -->
+  <div class="upload-prompt fade-in" *ngIf="!loading && !profile && !uploading">
+    <div class="upload-prompt-icon"><i class="bi bi-person-badge"></i></div>
+    <h5 class="fw-semibold">Henüz CV yüklenmedi</h5>
+    <p class="text-muted small mb-0">Yukarıdaki alana PDF CV'ni yükleyerek başla.</p>
+  </div>
+
+</div>

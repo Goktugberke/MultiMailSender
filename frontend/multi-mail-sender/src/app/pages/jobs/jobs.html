@@ -1,0 +1,97 @@
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="page-header fade-up">
+    <h1 class="page-title g-text">İş & Staj İlanları</h1>
+    <p class="page-sub">8 farklı kariyer sitesinden gerçek zamanlı çekilen ilanlar</p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar glass fade-up" style="animation-delay:.05s">
+    <i class="bi bi-search" style="color:var(--text-muted);font-size:1.1rem"></i>
+    <input type="text" class="form-control border-0 shadow-none ps-1"
+           [(ngModel)]="query" placeholder="Pozisyon veya şirket ara..."
+           (keyup.enter)="load()" style="background:transparent" />
+    <button class="btn btn-primary px-4" (click)="load()">Ara</button>
+    <button class="btn-refresh-glow" (click)="refresh()" [disabled]="refreshing">
+      <span *ngIf="refreshing" class="spinner-border spinner-border-sm me-1"></span>
+      <i *ngIf="!refreshing" class="bi bi-arrow-clockwise me-1"></i>
+      {{ refreshing ? 'Yükleniyor...' : 'Yenile' }}
+    </button>
+  </div>
+
+  <!-- Source Filter Tabs -->
+  <div class="source-tabs fade-up" style="animation-delay:.1s">
+    <button *ngFor="let s of sources" class="source-tab {{ s.tabCls }}"
+            [class.active]="activeSource === s.id" (click)="setSource(s.id)">
+      {{ s.label }}
+      <span class="tab-count">{{ countFor(s.id) }}</span>
+    </button>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-warning mb-3">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+    <span class="ms-2">Backend çalışıyor mu? <code>localhost:8080/health</code> kontrol et.</span>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-info" *ngIf="loading">
+    <div class="loading-spinner-wrap">
+      <div class="spinner-border"></div>
+    </div>
+    <div class="loading-label">İlanlar scrape ediliyor... (10-20 sn)</div>
+  </div>
+
+  <!-- Results info -->
+  <div class="results-info fade-in" *ngIf="!loading && filtered.length > 0">
+    <span class="results-count">{{ filtered.length }} ilan</span>
+    <span *ngIf="activeSource">{{ activeSource }} kaynağından</span>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state fade-in" *ngIf="!loading && filtered.length === 0 && !error">
+    <div class="empty-icon"><i class="bi bi-briefcase"></i></div>
+    <h5 class="fw-semibold">İlan bulunamadı</h5>
+    <p class="mb-3 small">Yenile butonuna tıklayarak siteleri tarayabilirsin.</p>
+    <button class="btn-refresh-glow" (click)="refresh()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Şimdi Yenile
+    </button>
+  </div>
+
+  <!-- Jobs Grid -->
+  <div class="jobs-grid" *ngIf="!loading && filtered.length > 0">
+    <div class="job-card" *ngFor="let job of filtered; let i = index; trackBy: trackByIdx"
+         [style.animation-delay]="(i * 0.03) + 's'">
+
+      <div class="card-top">
+        <span class="source-pill {{ pillFor(job.source) }}">{{ job.source }}</span>
+        <span class="cat-pill" *ngIf="job.category">{{ job.category }}</span>
+      </div>
+
+      <div class="job-title">{{ job.title }}</div>
+
+      <div class="company-row" *ngIf="job.company || job.location">
+        <div class="company-avatar">{{ avatarLetter(job.company) }}</div>
+        <div class="company-details">
+          <div class="company-name-txt">{{ job.company || 'Bilinmiyor' }}</div>
+          <div class="location-txt" *ngIf="job.location">
+            <i class="bi bi-geo-alt me-1"></i>{{ job.location }}
+          </div>
+        </div>
+      </div>
+
+      <div class="job-desc" *ngIf="job.description">{{ job.description }}</div>
+
+      <div class="card-footer-row">
+        <span class="posted-date" *ngIf="job.postedAt">{{ job.postedAt }}</span>
+        <span class="posted-date" *ngIf="!job.postedAt">—</span>
+        <a *ngIf="job.url" [href]="job.url" target="_blank" rel="noopener" class="apply-btn">
+          <i class="bi bi-box-arrow-up-right"></i>Başvur
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
